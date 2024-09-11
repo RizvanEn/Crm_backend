@@ -1,0 +1,132 @@
+import express from "express";
+import { BookingModel } from "../models/bookingModel.js";
+const BookingRoutes = express.Router();
+
+BookingRoutes.post("/addbooking", async (req, res) => {
+  try {
+    if (!req.body.branch_name || !req.body.company_name || !req.body.contact_person) {
+      return res.status(400).send({
+        message: "send all requierd feilds branch_name company_name contact_person ..etc",
+      });
+    }
+
+    const new_booking = {
+      user_id: req.body.user_id,
+      branch_name: req.body.branch_name,
+      company_name: req.body.company_name,
+      contact_person: req.body.contact_person,
+      email: req.body.email,
+      contact_no: req.body.contact_no,
+      services: req.body.services,
+      total_amount: req.body.total_amount,
+      term_1:req.body.term_1,
+      term_2:req.body.term_2,
+      term_3:req.body.term_3,
+      term_1_payment_date: req.body.term_1_payment_date,
+      term_2_payment_date:req.body.term_2_payment_date,
+      term_3_payment_date:req.body.term_3_payment_date,
+      pan: req.body.pan,
+      gst: req.body.gst,
+      remark: req.body.remark,
+      date: req.body.date ? new Date(req.body.date) : new Date(),
+    };
+    const booking = await BookingModel.create(new_booking);
+    return res.status(201).send(booking._id);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send({ message: error.message });
+  }
+});
+
+//Edit booking 
+BookingRoutes.patch('/editbooking/:id', async (req, res) => {
+  const { id } = req.params;
+  const updates = req.body;
+
+  // Get the user role from the headers (e.g., 'user-role' header)
+  const user_role = req.headers['user-role'];
+
+  // Check if the user role is provided
+  if (!user_role) {
+    return res.status(400).send({ message: "User role is required" });
+  }
+
+  try {
+    // Fetch the existing booking to check the current data
+    const Booking = await BookingModel.findById(id);
+
+    if (!Booking) {
+      return res.status(404).send('Booking not found');
+    }
+
+    // Define roles with full access
+    const rolesWithFullAccess = ['dev', 'senior admin'];
+
+    // Logic for admin: allow changes to everything except "services"
+    if (user_role === 'admin' && 'services' in updates) {
+      return res.status(403).send({
+        message: "Admin users are not allowed to change the services"
+      });
+    }
+
+    // If the user has full access (dev or senior admin), they can update everything
+    if (rolesWithFullAccess.includes(user_role) || user_role === 'admin') {
+      const updatedBooking = await BookingModel.findByIdAndUpdate(id, updates, { new: true });
+      return res.status(200).send({ message: "Booking Updated Successfully", updatedBooking });
+    }
+
+    // If the role is neither dev, senior admin, nor admin, deny access
+    return res.status(403).send({
+      message: "You do not have permission to edit this booking"
+    });
+
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+});
+
+//Delete Booking 
+BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
+  const { id } = req.params;
+  
+  try {
+    // Find the booking by ID and delete it
+    const deletedBooking = await BookingModel.findByIdAndDelete(id);
+    
+    // If no booking is found, return a 404 error
+    if (!deletedBooking) {
+      return res.status(404).send('Booking not found');
+    }
+
+    // If booking is successfully deleted, return a success message
+    res.status(200).send({ message: "Booking Deleted Successfully" });
+  } catch (err) {
+    // Handle any errors and return a 500 response
+    res.status(500).send(err);
+  }
+});
+
+//getting bookings by date
+BookingRoutes.get('/bookings', async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  try {
+    // If startDate and endDate are provided, filter bookings between those dates
+    const query = {};
+    if (startDate && endDate) {
+      query.date = {
+        $gte: new Date(startDate),
+        $lte: new Date(endDate)
+      };
+    }
+
+    const bookings = await BookingModel.find(query);
+    const no_of_bookings=bookings.length;
+    
+    res.status(200).send({ message: "Bookings fetched successfully", bookings,no_of_bookings });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+});
+
+export default BookingRoutes;
