@@ -94,3 +94,23 @@ user
 
 
 Rizvan@123 Rizvan user pass of mongodb cluster 
+
+{
+    "user_id":"66c986643be7975c7bd6e47e",
+    "branch_name": "808",
+    "company_name": "ENEGO SERVICES PVT LTD",
+    "contact_person":"AMAN",
+    "email":"abc@gmail.com",
+    "contact_no":9876543234,
+    "services":"GIG",
+    "total_amount":50000,
+    "term_1":17700,
+    "term_2":0,
+    "term_3":0,
+    "term_1_payment_date":"21-06-2024",
+    "term_2_payment_date":"",
+    "term_3_payment_date":"",
+    "pan":"EGOPT9988K",
+    "gst":"2ZZLI98H",
+    "remark":"ABC"
+  }

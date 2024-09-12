@@ -31,7 +31,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       date: req.body.date ? new Date(req.body.date) : new Date(),
     };
     const booking = await BookingModel.create(new_booking);
-    return res.status(201).send(booking._id);
+    return res.status(201).send({Message:"Booking Created Successfully",booking_id:booking._id});
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: error.message });
@@ -121,7 +121,11 @@ BookingRoutes.get('/bookings', async (req, res) => {
     }
 
     const bookings = await BookingModel.find(query);
+    
     const no_of_bookings=bookings.length;
+    if(no_of_bookings==0){
+      return res.status(404).send({message:"No Bookings Found"})
+    }
     
     res.status(200).send({ message: "Bookings fetched successfully", bookings,no_of_bookings });
   } catch (err) {
