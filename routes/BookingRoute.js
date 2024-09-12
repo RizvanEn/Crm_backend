@@ -133,4 +133,13 @@ BookingRoutes.get('/bookings', async (req, res) => {
   }
 });
 
+//getting all bookings
+BookingRoutes.get('/all',async(req,res)=>{
+  const Allbookings = await BookingModel.find({});
+  if(Allbookings.length!=0){
+    return res.status(200).send({message:"All Bookings Fetched Successfully",Allbookings})
+  }
+  return res.status(404).send({message:"No Bookings To Show"})
+})
+
 export default BookingRoutes;
