@@ -7,14 +7,15 @@ const app = express();
 // app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
-const corsOptions = {
-  origin: true, // Allow all origins
-  methods: ['GET', 'POST','PUT','DELETE','PATCH'], // Allow only these HTTP methods
-  allowedHeaders: ['Content-Type', 'Authorization'], // Allow only these headers
-  credentials: true, // Allow cookies to be included in the requests
-};
+// const corsOptions = {
+//   origin: true, // Allow all origins
+//   methods: ['GET', 'POST','PUT','DELETE','PATCH'], // Allow only these HTTP methods
+//   allowedHeaders: ['Content-Type', 'Authorization'], // Allow only these headers
+//   credentials: true, // Allow cookies to be included in the requests
+// };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors));
 
 // app.use(cors());
 // app.use(
