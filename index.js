@@ -9,7 +9,7 @@ app.use(express.json());
 
 const corsOptions = {
   origin: true, // Allow all origins
-  methods: ['GET', 'POST','PUT','DELETE'], // Allow only these HTTP methods
+  methods: ['GET', 'POST','PUT','DELETE','PATCH'], // Allow only these HTTP methods
   allowedHeaders: ['Content-Type', 'Authorization'], // Allow only these headers
   credentials: true, // Allow cookies to be included in the requests
 };
