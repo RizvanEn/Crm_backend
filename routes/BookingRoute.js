@@ -10,6 +10,19 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       });
     }
 
+    const existingBooking = await BookingModel.findOne({
+      $or: [
+        { gst: req.body.gst },
+        { pan: req.body.pan }
+      ]
+    });
+
+    if (existingBooking) {
+      return res.status(400).send({
+        message: "Booking with the same GST or PAN already exists.",
+      });
+    }
+
     const new_booking = {
       user_id: req.body.user_id,
       branch_name: req.body.branch_name,
