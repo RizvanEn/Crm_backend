@@ -18,7 +18,8 @@ const bookingSchema = mongoose.Schema(
     pan:{type:String},
     gst:{type:String},
     remark:{type:String},
-    date: { type: Date, required: true }
+    date: { type: Date, required: true },
+    bank:{type:String}
   },
   { versionKey: false },
   { timestamps: false }
