@@ -100,7 +100,8 @@ UserRoutes.get('/all',async(req,res)=>{
         message: "No Users found",
       });
     }
-    res.status(200).send(Users)
+    const no_of_users=Users.length;
+    res.status(200).send({no_of_users})
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: error.message });
