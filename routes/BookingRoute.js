@@ -42,6 +42,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       gst: req.body.gst,
       remark: req.body.remark,
       date: req.body.date ? new Date(req.body.date) : new Date(),
+      bank:req.body.bank
     };
     const booking = await BookingModel.create(new_booking);
     return res.status(201).send({Message:"Booking Created Successfully",booking_id:booking._id});
