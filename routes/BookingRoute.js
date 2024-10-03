@@ -17,9 +17,9 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       ]
     });
 
-    if (existingBooking) {
+    if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
       return res.status(400).send({
-        message: "Booking with the same GST or PAN already exists.",
+        message: "Booking with the same GST or PAN already exists for a different user.",
       });
     }
 
