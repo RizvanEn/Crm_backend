@@ -17,12 +17,12 @@ BookingRoutes.post("/addbooking", async (req, res) => {
         { pan: req.body.pan }
       ]
     });
-    const existingUser = await UserModel.findById(req.body.user_id);
-    if (!existingUser) {
-      return res.status(400).send({
-        message: "Invalid user. Please provide a valid user ID.",
-      });
-    }
+    // const existingUser = await UserModel.findById(req.body.user_id);
+    // if (!existingUser) {
+    //   return res.status(400).send({
+    //     message: "Invalid user. Please provide a valid user ID.",
+    //   });
+    // }
     if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
       return res.status(400).send({
         message: "Booking with the same GST or PAN already exists for a different user.",
