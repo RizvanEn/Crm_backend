@@ -1,5 +1,6 @@
 import express from "express";
 import { BookingModel } from "../models/bookingModel.js";
+import{UserModel} from '../models/UserModel.js'
 const BookingRoutes = express.Router();
 
 BookingRoutes.post("/addbooking", async (req, res) => {
