@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const PORT = 3000;
+// export const PORT = 3000;
 
 export const connection = async () => {
   try {
