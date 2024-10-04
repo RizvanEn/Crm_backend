@@ -1,17 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+dotenv.config();
 
-const uri = "mongodb+srv://Rizvan:Rizvan@123@cluster0.mwepz3e.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0/mydatabase";
+// export const PORT = 5353;
 
-const Connection = async () => {
+export const connection = async () => {
   try {
-    await mongoose.connect("mongodb+srv://Rizvan:Rizvan@123@cluster0.mwepz3e.mongodb.net/Mydatabase")
-    console.log(mongoose.connection.host);
-    console.log("db connected")
+    // const conn = await mongoose.connect('mongodb://localhost:27017/crm');
+    const conn = await mongoose.connect(process.env.Mongo_URL);
     
+    console.log(`MongoDB Connected: ${conn.connection.host}`);
+  } catch (error) {
+    console.log({ msg: "cannot connect to db", error: error.message });
+    process.exit(1);
   }
-  catch (error) {
-    console.error(error);
-  }
-}
-
-export default Connection;
+};
