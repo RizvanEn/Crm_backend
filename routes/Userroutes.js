@@ -183,7 +183,7 @@ UserRoutes.get('/bookings/:id', async (req, res) => {
 UserRoutes.get('/:id?', async (req, res) => {
   const id = req.params.id // This may be undefined if no id is provided
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
-  console.log(id,searchPattern);
+  // console.log(id,searchPattern);
   try {
     let Booking;
 
