@@ -1,5 +1,5 @@
 import express from "express";
-import { connection } from "./config.js";
+import { PORT,connection } from "./config.js";
 import UserRoutes from './routes/Userroutes.js'
 import BookingRoutes from "./routes/BookingRoute.js";
 import cors from "cors";
@@ -41,7 +41,7 @@ app.get("/", (req, res) => {
 connection()
   .then(() => {
     console.log("connected");
-    app.listen( () => {
+    app.listen(PORT, () => {
       // console.log(`server is running at http://localhost:${PORT} `);
     });
   })
