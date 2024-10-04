@@ -1,7 +1,7 @@
 import express from "express";
 import { UserModel } from "../models/UserModel.js";
 import { BookingModel } from "../models/bookingModel.js";
-import {regex, pattern} from 'regex';
+// import {regex, pattern} from 'regex';
 import bcrypt from 'bcrypt';
 const saltRounds = 5;
 
