@@ -10,25 +10,24 @@ BookingRoutes.post("/addbooking", async (req, res) => {
         message: "send all requierd feilds branch_name company_name contact_person ..etc",
       });
     }
-
-    const existingBooking = await BookingModel.findOne({
-      $or: [
-        { gst: req.body.gst },
-        { pan: req.body.pan }
-      ]
-    });
     // const existingUser = await UserModel.findById(req.body.user_id);
     // if (!existingUser) {
     //   return res.status(400).send({
     //     message: "Invalid user. Please provide a valid user ID.",
     //   });
     // }
+    const existingBooking = await BookingModel.findOne({
+      $or: [
+        { gst: req.body.gst },
+        { pan: req.body.pan }
+      ]
+    });
+
     if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
       return res.status(400).send({
         message: "Booking with the same GST or PAN already exists for a different user.",
       });
     }
-
     const new_booking = {
       user_id: req.body.user_id,
       branch_name: req.body.branch_name,
@@ -48,9 +47,9 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       gst: req.body.gst,
       remark: req.body.remark,
       date: req.body.date ? new Date(req.body.date) : new Date(),
-      bank:req.body.bank,
       status:req.body.status
     };
+    
     const booking = await BookingModel.create(new_booking);
     return res.status(201).send({Message:"Booking Created Successfully",booking_id:booking._id});
   } catch (error) {
@@ -133,6 +132,8 @@ BookingRoutes.get('/bookings', async (req, res) => {
 
   try {
     // If startDate and endDate are provided, filter bookings between those dates
+    //GET /bookings?startDate=2023-09-01&endDate=2023-09-30
+
     const query = {};
     if (startDate && endDate) {
       query.date = {
