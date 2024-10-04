@@ -1,6 +1,7 @@
 import express from "express";
 import { UserModel } from "../models/UserModel.js";
 import { BookingModel } from "../models/bookingModel.js";
+import {regex, pattern} from 'regex';
 import bcrypt from 'bcrypt';
 const saltRounds = 5;
 
@@ -101,6 +102,8 @@ UserRoutes.get('/all',async(req,res)=>{
       });
     }
     const no_of_users=Users.length;
+    // console.log(no_of_users);
+    
     res.status(200).send({no_of_users})
   } catch (error) {
     console.log(error.message);
@@ -133,24 +136,90 @@ UserRoutes.get('/bookings/:id', async (req, res) => {
   }
 })
 
-//getting unique booking 
-UserRoutes.get('/bookings/booking/:id', async (req, res) => {
-  const id = req.params.id;
+// //getting unique booking 
+// UserRoutes.get('/bookings/booking/:id', async (req, res) => {
+//   const id = req.params.id;
+  
+//   try {
+//     const Booking = await BookingModel.find({ _id: id });
+//     //  console.log(Bookings)
+//     if (Booking.length === 0) {
+//       return res.status(404).send({
+//         message: "No bookings found with this id",
+//       });
+//     }
+//     res.status(200).send(Booking)
+
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).send({ message: error.message });
+//   }
+// })
+
+// //using regex
+// // Search by company name using regex
+// UserRoutes.get('/booking/search', async (req, res) => {
+//   const searchPattern = req.query.pattern;
+  
+//   try {
+//     // Use regex to search for bookings that match the company name pattern
+//     const Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
+    
+//     if (Booking.length === 0) {
+//       return res.status(404).send({
+//         message: "No bookings found matching the company name pattern",
+//       });
+//     }
+    
+//     res.status(200).send(Booking);
+//   } catch (error) {
+//     console.log(error.message);
+//     return res.status(500).send({ message: error.message });
+//   }
+// });
+
+
+//combined search 
+UserRoutes.get('/:id?', async (req, res) => {
+  const id = req.params.id // This may be undefined if no id is provided
+  const searchPattern = req.query.pattern; // Search pattern from the query parameter
+  console.log(id,searchPattern);
   try {
-    const Booking = await BookingModel.find({ _id: id });
-    //  console.log(Bookings)
-    if (Booking.length === 0) {
-      return res.status(404).send({
-        message: "No bookings found with this id",
+    let Booking;
+
+    if (id) {
+      // If an ID is provided, search by the booking ID
+      Booking = await BookingModel.find({ _id: id });
+      
+      if (Booking.length === 0) {
+        return res.status(404).send({
+          message: "No bookings found with this id",
+        });
+      }
+    } else if (searchPattern) {
+      // If no ID is provided but a search pattern is provided, search by company name
+      Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
+      
+      if (Booking.length === 0) {
+        return res.status(404).send({
+          message: "No bookings found matching the company name pattern",
+        });
+      }
+    } else {
+      // If neither an ID nor a search pattern is provided, return an error
+      return res.status(400).send({
+        message: "Either id or pattern query parameter is required",
       });
     }
-    res.status(200).send(Booking)
+    
+    res.status(200).send(Booking);
 
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: error.message });
   }
-})
+});
+
 
 
 //check user is a valid or not 
