@@ -4,7 +4,7 @@ import { BookingModel } from "../models/bookingModel.js";
 // import {regex, pattern} from 'regex';
 import crypto from 'crypto';  // Used to generate random tokens
 // import nodemailer from 'nodemailer';  // Used to send emails
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 const saltRounds = 5;
 
