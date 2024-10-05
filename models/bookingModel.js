@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 const bookingSchema = mongoose.Schema(
   {
     user_id:{type:String,required:true},
+    bdm:{type:String,required:true},
     branch_name: { type: String, required: true },
     company_name: { type: String, required: true },
     contact_person: { type: String, required: true },
