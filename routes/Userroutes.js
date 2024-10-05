@@ -286,14 +286,14 @@ UserRoutes.post('/request-reset-password', async (req, res) => {
       port: 465,
       secure: true, // true for port 465, false for other ports
       auth: {
-        user: "siteadmin@enego.co.in",
-        pass: "Siteadmin@enego@321",
+        user: "",
+        pass: "",
       },
     });
 
     const mailOptions = {
       to: user.email,
-      from: 'siteadmin@enego.co.in',
+      from: '',
       subject: 'Password Reset Request',
       text: `You are receiving this email because you (or someone else) have requested to reset the password for your account.\n\n
       Please click the following link, or paste it into your browser to complete the process:\n\n
