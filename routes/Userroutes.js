@@ -3,7 +3,7 @@ import { UserModel } from "../models/UserModel.js";
 import { BookingModel } from "../models/bookingModel.js";
 // import {regex, pattern} from 'regex';
 import crypto from 'crypto';  // Used to generate random tokens
-import nodemailer from 'nodemailer';  // Used to send emails
+// import nodemailer from 'nodemailer';  // Used to send emails
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 const saltRounds = 5;
@@ -255,90 +255,90 @@ UserRoutes.get('/:id', async (req, res) => {
 
 //password reset request route 
 // Route to request password reset
-UserRoutes.post('/request-reset-password', async (req, res) => {
-  const { email } = req.body;
+// UserRoutes.post('/request-reset-password', async (req, res) => {
+//   const { email } = req.body;
 
-  try {
-    // Find the user by email
-    const user = await UserModel.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-    // console.log(user);
+//   try {
+//     // Find the user by email
+//     const user = await UserModel.findOne({ email });
+//     if (!user) {
+//       return res.status(404).json({ message: 'User not found' });
+//     }
+//     // console.log(user);
 
-    // Generate a reset token
-    const resetToken = crypto.randomBytes(20).toString('hex');
+//     // Generate a reset token
+//     const resetToken = crypto.randomBytes(20).toString('hex');
 
-    // Token expires in 1 hour
-    const resetPasswordExpires = Date.now() + 3600000;
+//     // Token expires in 1 hour
+//     const resetPasswordExpires = Date.now() + 3600000;
 
-    // Save the token and expiration to the user's document
-    user.resetPasswordToken = resetToken;
-    user.resetPasswordExpires = resetPasswordExpires;
-    await user.save();
+//     // Save the token and expiration to the user's document
+//     user.resetPasswordToken = resetToken;
+//     user.resetPasswordExpires = resetPasswordExpires;
+//     await user.save();
 
-    // Create a reset URL with the token
-    const resetUrl = `http://localhost:5353/user/reset-password/${resetToken}`;
+//     // Create a reset URL with the token
+//     const resetUrl = `http://localhost:5353/user/reset-password/${resetToken}`;
 
-    // Send an email with the reset link (setup `nodemailer` transport)
-    const transporter = nodemailer.createTransport({
-      host: "smtp.hostinger.com",
-      port: 465,
-      secure: true, // true for port 465, false for other ports
-      auth: {
-        user: "",
-        pass: "",
-      },
-    });
+//     // Send an email with the reset link (setup `nodemailer` transport)
+//     const transporter = nodemailer.createTransport({
+//       host: "smtp.hostinger.com",
+//       port: 465,
+//       secure: true, // true for port 465, false for other ports
+//       auth: {
+//         user: "",
+//         pass: "",
+//       },
+//     });
 
-    const mailOptions = {
-      to: user.email,
-      from: '',
-      subject: 'Password Reset Request',
-      text: `You are receiving this email because you (or someone else) have requested to reset the password for your account.\n\n
-      Please click the following link, or paste it into your browser to complete the process:\n\n
-      ${resetUrl}\n\n
-      If you did not request this, please ignore this email and your password will remain unchanged.`
-    };
+//     const mailOptions = {
+//       to: user.email,
+//       from: '',
+//       subject: 'Password Reset Request',
+//       text: `You are receiving this email because you (or someone else) have requested to reset the password for your account.\n\n
+//       Please click the following link, or paste it into your browser to complete the process:\n\n
+//       ${resetUrl}\n\n
+//       If you did not request this, please ignore this email and your password will remain unchanged.`
+//     };
 
-    await transporter.sendMail(mailOptions);
+//     await transporter.sendMail(mailOptions);
 
-    res.status(200).json({ message: 'Password reset link sent to your email.' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error.' });
-  }
-});
+//     res.status(200).json({ message: 'Password reset link sent to your email.' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Server error.' });
+//   }
+// });
 
-//password reset route
-UserRoutes.post('/reset-password/:token', async (req, res) => {
-  const { token } = req.params;
-  const { newPassword } = req.body;
+// //password reset route
+// UserRoutes.post('/reset-password/:token', async (req, res) => {
+//   const { token } = req.params;
+//   const { newPassword } = req.body;
 
-  try {
-    // Find the user by reset token and check if the token is still valid
-    const user = await UserModel.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() }  // Check if token has not expired
-    });
+//   try {
+//     // Find the user by reset token and check if the token is still valid
+//     const user = await UserModel.findOne({
+//       resetPasswordToken: token,
+//       resetPasswordExpires: { $gt: Date.now() }  // Check if token has not expired
+//     });
 
-    if (!user) {
-      return res.status(400).json({ message: 'Invalid or expired token' });
-    }
+//     if (!user) {
+//       return res.status(400).json({ message: 'Invalid or expired token' });
+//     }
 
-    // Hash the new password
-    const salt = await bcrypt.genSalt(5);
-    const hashedPassword = await bcrypt.hash(newPassword, salt);
+//     // Hash the new password
+//     const salt = await bcrypt.genSalt(5);
+//     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    // Save the new password and clear the reset token fields
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
-    await user.save();
+//     // Save the new password and clear the reset token fields
+//     user.password = hashedPassword;
+//     user.resetPasswordToken = undefined;
+//     user.resetPasswordExpires = undefined;
+//     await user.save();
 
-    res.status(200).json({ message: 'Password reset successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Server error' });
-  }
-});
+//     res.status(200).json({ message: 'Password reset successfully' });
+//   } catch (error) {
+//     res.status(500).json({ message: 'Server error' });
+//   }
+// });
 
 export default UserRoutes;
