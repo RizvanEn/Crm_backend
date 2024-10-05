@@ -127,7 +127,7 @@ BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
 });
 
 //getting bookings by date
-BookingRoutes.get('/bookings', async (req, res) => {
+BookingRoutes.get('/bookings?', async (req, res) => {
   const { startDate, endDate } = req.query;
 
   try {
