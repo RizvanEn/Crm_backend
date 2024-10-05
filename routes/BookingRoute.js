@@ -30,6 +30,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
     }
     const new_booking = {
       user_id: req.body.user_id,
+      bdm:req.body.bdm,
       branch_name: req.body.branch_name,
       company_name: req.body.company_name,
       contact_person: req.body.contact_person,
