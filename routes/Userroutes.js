@@ -95,6 +95,45 @@ UserRoutes.post('/login', async (req, res) => {
   }
 });
 
+//reset password
+UserRoutes.put('/password-reset', async (req, res) => {
+  const { password, email } = req.body;
+
+  // Validate if email and password are provided
+  if (!email || !password) {
+    return res.status(400).send({
+      message: "Please provide both email and new password",
+    });
+  }
+
+  // Convert email to lowercase
+  const normalizedEmail = email.toLowerCase();
+
+  try {
+    // Find the user by email
+    const user = await UserModel.findOne({ email: normalizedEmail });
+
+    // If no user is found, send an error response
+    if (!user) {
+      return res.status(404).send({ message: "User not found with this email" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+    // Update the user's password
+    user.password = hashedPassword;
+    await user.save();
+
+    // Send success response
+    return res.status(200).send({ message: "Password updated successfully" });
+
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send({ message: error.message });
+  }
+});
+
 //listing all users
 UserRoutes.get('/all', async (req, res) => {
   try {
