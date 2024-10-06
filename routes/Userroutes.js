@@ -183,16 +183,24 @@ UserRoutes.get('/bookings/:id', async (req, res) => {
 
 
 //combined search 
+// updated combined  search 
 UserRoutes.get('/:id?', async (req, res) => {
-  const id = req.params.id // This may be undefined if no id is provided
+  const id = req.params.id; // This may be undefined if no id is provided
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
-  // console.log(id,searchPattern);
+  const userRole = req.query.userRole; // Assuming user's role is stored in req.user
+  const userId = req.query.userId; // Assuming user's ID is stored in req.user
+  
   try {
     let Booking;
 
     if (id) {
       // If an ID is provided, search by the booking ID
-      Booking = await BookingModel.find({ _id: id });
+      if (['dev', 'admin', 'senior admin'].includes(userRole)) {
+        Booking = await BookingModel.find({ _id: id });
+      } else {
+        // If the user is not dev, admin, or senior admin, search only within their bookings
+        Booking = await BookingModel.find({ _id: id, user_id: userId });
+      }
 
       if (Booking.length === 0) {
         return res.status(404).send({
@@ -201,7 +209,15 @@ UserRoutes.get('/:id?', async (req, res) => {
       }
     } else if (searchPattern) {
       // If no ID is provided but a search pattern is provided, search by company name
-      Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
+      if (['dev', 'admin', 'senior admin'].includes(userRole)) {
+        Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
+      } else {
+        // Search within user's bookings only if not dev, admin, or senior admin
+        Booking = await BookingModel.find({ 
+          company_name: { $regex: searchPattern, $options: 'i' },
+          user_id: userId // Ensure the user only gets their own bookings
+        });
+      }
 
       if (Booking.length === 0) {
         return res.status(404).send({
