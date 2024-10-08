@@ -212,5 +212,31 @@ BookingRoutes.get('/all',async(req,res)=>{
   }
   return res.status(404).send({message:"No Bookings To Show"})
 })
+geting all bookings by status
+BookingRoutes.get('/bookings/status', async (req, res) => {
+  const { status } = req.query;
 
+  try {
+    // Validate the status parameter
+    const validStatuses = ['Pending', 'In Progress', 'Completed'];
+    
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).send({ message: "Invalid or missing status parameter. Valid statuses are: Pending, In Progress, Completed." });
+    }
+
+    // Query to find bookings based on the status
+    const bookings = await BookingModel.find({ status });
+
+    const no_of_bookings = bookings.length;
+    if (no_of_bookings === 0) {
+      return res.status(404).send({ message: "No Bookings Found for the given status" });
+    }
+
+    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+  } catch (err) {
+    // Handle any server errors
+    console.error("Error fetching bookings by status:", err.message);
+    res.status(500).send({ message: err.message });
+  }
+});
 export default BookingRoutes;
