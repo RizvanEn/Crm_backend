@@ -47,7 +47,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       pan: req.body.pan,
       gst: req.body.gst,
       remark: req.body.remark,
-      date: req.body.date ? new Date(req.body.date) : new Date(),
+      date: req.body.date ? req.body.date : new Date(),
       status:req.body.status,
       bank:req.body.bank
     };
