@@ -212,7 +212,9 @@ BookingRoutes.get('/all',async(req,res)=>{
   }
   return res.status(404).send({message:"No Bookings To Show"})
 })
-geting all bookings by status
+
+
+//geting all bookings by status
 BookingRoutes.get('/bookings/status', async (req, res) => {
   const { status } = req.query;
 
