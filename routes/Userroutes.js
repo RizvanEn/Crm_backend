@@ -224,7 +224,7 @@ UserRoutes.get('/bookings/:id', async (req, res) => {
 //combined search 
 // updated combined  search 
 UserRoutes.get('/:id?', async (req, res) => {
-  const id = req.params.id; // This may be undefined if no id is provided
+  const booking_id = req.params.id; // This may be undefined if no id is provided
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
   const userRole = req.query.userRole; // Assuming user's role is stored in req.user
   const userId = req.query.userId; // Assuming user's ID is stored in req.user
@@ -235,10 +235,10 @@ UserRoutes.get('/:id?', async (req, res) => {
     if (id) {
       // If an ID is provided, search by the booking ID
       if (['dev', 'admin', 'senior admin'].includes(userRole)) {
-        Booking = await BookingModel.find({ _id: id });
+        Booking = await BookingModel.find({ _id: booking_id });
       } else {
         // If the user is not dev, admin, or senior admin, search only within their bookings
-        Booking = await BookingModel.find({ _id: id, user_id: userId });
+        Booking = await BookingModel.find({ _id: booking_id, user_id: userId });
       }
 
       if (Booking.length === 0) {
