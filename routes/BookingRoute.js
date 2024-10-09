@@ -234,7 +234,7 @@ BookingRoutes.get('/bookings/status', async (req, res) => {
       return res.status(404).send({ message: "No Bookings Found for the given status" });
     }
 
-    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    res.status(200).send(bookings);
   } catch (err) {
     // Handle any server errors
     console.error("Error fetching bookings by status:", err.message);
