@@ -248,7 +248,7 @@ UserRoutes.get('/:id?', async (req, res) => {
       }
     } else if (searchPattern) {
       // If no ID is provided but a search pattern is provided, search by company name
-      if (['dev', 'admin', 'senior admin'].includes(userRole)) {
+      if (['dev', 'admin', 'senior admin','bdm'].includes(userRole)) {
         Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
       } else {
         // Search within user's bookings only if not dev, admin, or senior admin
