@@ -232,7 +232,7 @@ UserRoutes.get('/:id?', async (req, res) => {
   try {
     let Booking;
 
-    if (id) {
+    if (booking_id) {
       // If an ID is provided, search by the booking ID
       if (['dev', 'admin', 'senior admin'].includes(userRole)) {
         Booking = await BookingModel.find({ _id: booking_id });
