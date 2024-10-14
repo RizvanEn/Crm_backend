@@ -18,7 +18,6 @@ BookingRoutes.post("/addbooking", async (req, res) => {
     // }
     const existingBooking = await BookingModel.findOne({
       $or: [
-        { gst: req.body.gst },
         { pan: req.body.pan }
       ]
     });
