@@ -282,7 +282,6 @@ UserRoutes.get('/:id?', async (req, res) => {
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
   const userRole = req.query.userRole; // Assuming user's role is stored in req.user
   const userId = req.query.userId; // Assuming user's ID is stored in req.user
-  const contactPerson = req.query.contactPerson; // Search by contact person name
 
   try {
     let Booking;
@@ -302,43 +301,33 @@ UserRoutes.get('/:id?', async (req, res) => {
         });
       }
     } else if (searchPattern) {
-      // If no ID is provided but a search pattern is provided, search by company name
+      // Combine search for both company_name and contact_person under the same pattern
+      const searchQuery = {
+        $or: [
+          { company_name: { $regex: searchPattern, $options: 'i' } },
+          { contact_person: { $regex: searchPattern, $options: 'i' } }
+        ]
+      };
+
       if (['dev', 'admin', 'senior admin'].includes(userRole)) {
-        Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
+        Booking = await BookingModel.find(searchQuery);
       } else {
         // Search within user's bookings only if not dev, admin, or senior admin
-        Booking = await BookingModel.find({ 
-          company_name: { $regex: searchPattern, $options: 'i' },
+        Booking = await BookingModel.find({
+          ...searchQuery,
           user_id: userId // Ensure the user only gets their own bookings
         });
       }
 
       if (Booking.length === 0) {
         return res.status(404).send({
-          message: "No bookings found matching the company name pattern",
-        });
-      }
-    } else if (contactPerson) {
-      // Search by contact person name
-      if (['dev', 'admin', 'senior admin'].includes(userRole)) {
-        Booking = await BookingModel.find({ contact_person: { $regex: contactPerson, $options: 'i' } });
-      } else {
-        // Search within user's bookings only if not dev, admin, or senior admin
-        Booking = await BookingModel.find({ 
-          contact_person: { $regex: contactPerson, $options: 'i' },
-          user_id: userId // Ensure the user only gets their own bookings
-        });
-      }
-
-      if (Booking.length === 0) {
-        return res.status(404).send({
-          message: "No bookings found matching the contact person name",
+          message: "No bookings found matching the pattern",
         });
       }
     } else {
-      // If neither an ID, search pattern, nor contact person is provided, return an error
+      // If neither an ID nor a search pattern is provided, return an error
       return res.status(400).send({
-        message: "Either id, pattern, or contactPerson query parameter is required",
+        message: "Either id or pattern query parameter is required",
       });
     }
 
