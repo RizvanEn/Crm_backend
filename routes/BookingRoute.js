@@ -3,6 +3,7 @@ import { BookingModel } from "../models/bookingModel.js";
 import{UserModel} from '../models/UserModel.js'
 const BookingRoutes = express.Router();
 
+//creating new booking
 BookingRoutes.post("/addbooking", async (req, res) => {
   try {
     if (!req.body.branch_name || !req.body.company_name || !req.body.contact_person) {
@@ -55,53 +56,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
   }
 });
 
-//Edit booking 
-// BookingRoutes.patch('/editbooking/:id', async (req, res) => {
-//   const { id } = req.params;
-//   const updates = req.body;
-
-//   // Get the user role from the headers (e.g., 'user-role' header)
-//   const user_role = req.headers['user-role'];
-
-//   // Check if the user role is provided
-//   if (!user_role) {
-//     return res.status(400).send({ message: "User role is required" });
-//   }
-
-//   try {
-//     // Fetch the existing booking to check the current data
-//     const Booking = await BookingModel.findById(id);
-
-//     if (!Booking) {
-//       return res.status(404).send('Booking not found');
-//     }
-
-//     // Define roles with full access
-//     const rolesWithFullAccess = ['dev', 'senior admin'];
-
-//     // Logic for admin: allow changes to everything except "services"
-//     if (user_role === 'admin' && 'services' in updates) {
-//       return res.status(403).send({
-//         message: "Admin users are not allowed to change the services"
-//       });
-//     }
-
-//     // If the user has full access (dev or senior admin), they can update everything
-//     if (rolesWithFullAccess.includes(user_role) || user_role === 'admin') {
-//       const updatedBooking = await BookingModel.findByIdAndUpdate(id, updates, { new: true });
-//       return res.status(200).send({ message: "Booking Updated Successfully", updatedBooking });
-//     }
-
-//     // If the role is neither dev, senior admin, nor admin, deny access
-//     return res.status(403).send({
-//       message: "You do not have permission to edit this booking"
-//     });
-
-//   } catch (err) {
-//     return res.status(500).send({ message: err.message });
-//   }
-// });
-
+//edit booking
 BookingRoutes.patch('/editbooking/:id', async (req, res) => {
   const { id } = req.params;
   let updates = req.body;
@@ -207,7 +162,6 @@ BookingRoutes.get('/all',async(req,res)=>{
   }
   return res.status(404).send({message:"No Bookings To Show"})
 })
-
 
 //geting all bookings by status
 BookingRoutes.get('/bookings/status', async (req, res) => {
