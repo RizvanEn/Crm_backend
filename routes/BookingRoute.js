@@ -164,29 +164,60 @@ BookingRoutes.get('/all',async(req,res)=>{
 })
 
 //geting all bookings by status
-BookingRoutes.get('/bookings/status', async (req, res) => {
-  const { status } = req.query;
+BookingRoutes.get('/bookings/services', async (req, res) => {
+  const { service } = req.query;
+  const user_id = req.query.user_id;
+  const user_role = req.headers.user_role; // Assuming the user role is provided in the headers
 
   try {
-    // Validate the status parameter
-    const validStatuses = ['Pending', 'In Progress', 'Completed'];
-    
-    if (!status || !validStatuses.includes(status)) {
-      return res.status(400).send({ message: "Invalid or missing status parameter. Valid statuses are: Pending, In Progress, Completed." });
+    // Validate the service parameter
+    if (!service) {
+      return res.status(400).send({
+        message: "Missing service parameter."
+      });
     }
 
-    // Query to find bookings based on the status
-    const bookings = await BookingModel.find({ status });
+    // Define valid roles
+    const validRoles = ['dev', 'admin', 'senior admin'];
 
+    // Check if the user has a valid role
+    if (!user_role || !validRoles.includes(user_role)) {
+      // If the user doesn't have a valid role, find bookings by user_id and service
+      if (!user_id) {
+        return res.status(403).send({
+          message: "Access forbidden. No valid role or user ID provided."
+        });
+      }
+
+      const bookingsByUserAndService = await BookingModel.find({ user_id: user_id, services: service });
+      const no_of_bookings = bookingsByUserAndService.length;
+
+      if (no_of_bookings === 0) {
+        return res.status(404).send({
+          message: "No Bookings Found for the given user and service."
+        });
+      }
+
+      return res.status(200).send({
+        message: "Bookings fetched successfully for the given user and service.",
+        bookings: bookingsByUserAndService,
+        no_of_bookings
+      });
+    }
+
+    // If the user has a valid role, find bookings based on the service
+    const bookings = await BookingModel.find({ services: service });
     const no_of_bookings = bookings.length;
+
     if (no_of_bookings === 0) {
-      return res.status(404).send({ message: "No Bookings Found for the given status" });
+      return res.status(404).send({ message: "No Bookings Found for the given service." });
     }
 
-    res.status(200).send(bookings);
+    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    
   } catch (err) {
     // Handle any server errors
-    console.error("Error fetching bookings by status:", err.message);
+    console.error("Error fetching bookings by service:", err.message);
     res.status(500).send({ message: err.message });
   }
 });
