@@ -1,16 +1,12 @@
 import express from "express";
 import { UserModel } from "../models/UserModel.js";
 import { BookingModel } from "../models/bookingModel.js";
-// import {regex, pattern} from 'regex';
 import crypto from 'crypto';  // Used to generate random tokens
-// import nodemailer from 'nodemailer';  // Used to send emails
-// import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
+
 const saltRounds = 5;
 
-
 const UserRoutes = express.Router();
-
 
 UserRoutes.post("/adduser", async (req, res) => {
   try {
@@ -52,8 +48,7 @@ UserRoutes.post("/adduser", async (req, res) => {
   }
 });
 
-
-
+//user login
 UserRoutes.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -154,7 +149,6 @@ UserRoutes.get('/all', async (req, res) => {
 })
 
 //getting all the bookings for specific user
-
 UserRoutes.get('/bookings/:id', async (req, res) => {
   const id = req.params.id;
   try {
@@ -178,105 +172,7 @@ UserRoutes.get('/bookings/:id', async (req, res) => {
   }
 })
 
-// //getting unique booking 
-// UserRoutes.get('/bookings/booking/:id', async (req, res) => {
-//   const id = req.params.id;
-
-//   try {
-//     const Booking = await BookingModel.find({ _id: id });
-//     //  console.log(Bookings)
-//     if (Booking.length === 0) {
-//       return res.status(404).send({
-//         message: "No bookings found with this id",
-//       });
-//     }
-//     res.status(200).send(Booking)
-
-//   } catch (error) {
-//     console.log(error.message);
-//     return res.status(500).send({ message: error.message });
-//   }
-// })
-
-// //using regex
-// // Search by company name using regex
-// UserRoutes.get('/booking/search', async (req, res) => {
-//   const searchPattern = req.query.pattern;
-
-//   try {
-//     // Use regex to search for bookings that match the company name pattern
-//     const Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
-
-//     if (Booking.length === 0) {
-//       return res.status(404).send({
-//         message: "No bookings found matching the company name pattern",
-//       });
-//     }
-
-//     res.status(200).send(Booking);
-//   } catch (error) {
-//     console.log(error.message);
-//     return res.status(500).send({ message: error.message });
-//   }
-// });
-
-
-//combined search 
-// updated combined  search 
-// UserRoutes.get('/:id?', async (req, res) => {
-//   const booking_id = req.params.id; // This may be undefined if no id is provided
-//   const searchPattern = req.query.pattern; // Search pattern from the query parameter
-//   const userRole = req.query.userRole; // Assuming user's role is stored in req.user
-//   const userId = req.query.userId; // Assuming user's ID is stored in req.user
-  
-//   try {
-//     let Booking;
-
-//     if (booking_id) {
-//       // If an ID is provided, search by the booking ID
-//       if (['dev', 'admin', 'senior admin'].includes(userRole)) {
-//         Booking = await BookingModel.find({ _id: booking_id });
-//       } else {
-//         // If the user is not dev, admin, or senior admin, search only within their bookings
-//         Booking = await BookingModel.find({ _id: booking_id, user_id: userId });
-//       }
-
-//       if (Booking.length === 0) {
-//         return res.status(404).send({
-//           message: "No bookings found with this id",
-//         });
-//       }
-//     } else if (searchPattern) {
-//       // If no ID is provided but a search pattern is provided, search by company name
-//       if (['dev', 'admin', 'senior admin','bdm'].includes(userRole)) {
-//         Booking = await BookingModel.find({ company_name: { $regex: searchPattern, $options: 'i' } });
-//       } else {
-//         // Search within user's bookings only if not dev, admin, or senior admin
-//         Booking = await BookingModel.find({ 
-//           company_name: { $regex: searchPattern, $options: 'i' },
-//           user_id: userId // Ensure the user only gets their own bookings
-//         });
-//       }
-
-//       if (Booking.length === 0) {
-//         return res.status(404).send({
-//           message: "No bookings found matching the company name pattern",
-//         });
-//       }
-//     } else {
-//       // If neither an ID nor a search pattern is provided, return an error
-//       return res.status(400).send({
-//         message: "Either id or pattern query parameter is required",
-//       });
-//     }
-
-//     res.status(200).send(Booking);
-
-//   } catch (error) {
-//     console.log(error.message);
-//     return res.status(500).send({ message: error.message });
-//   }
-// });
+//combined search
 UserRoutes.get('/:id?', async (req, res) => {
   const booking_id = req.params.id; // This may be undefined if no id is provided
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
@@ -342,7 +238,6 @@ UserRoutes.get('/:id?', async (req, res) => {
 
 
 //check user is a valid or not 
-
 UserRoutes.get('/:id', async (req, res) => {
   const id = req.params.id;
   try {
