@@ -23,7 +23,7 @@ const bookingSchema = mongoose.Schema(
     bank:{type:String},
     status:{type:String}
   },
-  { versionKey: false },
-  { timestamps: false }
+  { versionKey: false ,
+  timestamps:true}
 );
 export  const BookingModel = mongoose.model("booking", bookingSchema);
