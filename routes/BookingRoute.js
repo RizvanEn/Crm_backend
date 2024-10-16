@@ -125,34 +125,94 @@ BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
 });
 
 //getting bookings by date
-BookingRoutes.get('/bookings?', async (req, res) => {
+// BookingRoutes.get('/bookings?', async (req, res) => {
+//   const { startDate, endDate } = req.query;
+
+//   try {
+//     // If startDate and endDate are provided, filter bookings between those dates
+//     //GET /bookings?startDate=2023-09-01&endDate=2023-09-30
+
+//     const query = {};
+//     if (startDate && endDate) {
+//       query.date = {
+//         $gte: new Date(startDate),
+//         $lte: new Date(endDate)
+//       };
+//     }
+
+//     const bookings = await BookingModel.find(query);
+    
+//     const no_of_bookings=bookings.length;
+//     if(no_of_bookings==0){
+//       return res.status(404).send({message:"No Bookings Found"})
+//     }
+    
+//     // res.status(200).send({ message: "Bookings fetched successfully", bookings,no_of_bookings });
+//     res.status(200).send(bookings);
+//   } catch (err) {
+//     res.status(500).send({ message: err.message });
+//   }
+// });
+BookingRoutes.get('/bookings', async (req, res) => {
   const { startDate, endDate } = req.query;
+  const user_id = req.query.user_id;
+  const user_role = req.query.user_role;
 
   try {
-    // If startDate and endDate are provided, filter bookings between those dates
-    //GET /bookings?startDate=2023-09-01&endDate=2023-09-30
-
+    // Initialize query
     const query = {};
+
+    // If startDate and endDate are provided, filter bookings between those dates
     if (startDate && endDate) {
+      const parsedStartDate = new Date(startDate);
+      const parsedEndDate = new Date(endDate);
+
+      // Ensure both startDate and endDate are valid dates
+      if (isNaN(parsedStartDate) || isNaN(parsedEndDate)) {
+        return res.status(400).send({ message: "Invalid date format" });
+      }
+
+      // Set the time of endDate to the end of the day for inclusive filtering
+      parsedEndDate.setHours(23, 59, 59, 999);
+
       query.date = {
-        $gte: new Date(startDate),
-        $lte: new Date(endDate)
+        $gte: parsedStartDate,
+        $lte: parsedEndDate,
       };
     }
 
-    const bookings = await BookingModel.find(query);
-    
-    const no_of_bookings=bookings.length;
-    if(no_of_bookings==0){
-      return res.status(404).send({message:"No Bookings Found"})
+    // Define valid roles
+    const validRoles = ['dev', 'admin', 'senior admin'];
+
+    // Check if the user has a valid role
+    if (!user_role || !validRoles.includes(user_role)) {
+      // If the user doesn't have a valid role, restrict the query to their user_id
+      if (!user_id) {
+        return res.status(403).send({
+          message: "Access forbidden. No valid role or user ID provided."
+        });
+      }
+
+      // Restrict bookings to the user's own bookings
+      query.user_id = user_id;
     }
-    
-    // res.status(200).send({ message: "Bookings fetched successfully", bookings,no_of_bookings });
-    res.status(200).send(bookings);
+
+    // Fetch bookings based on the constructed query
+    const bookings = await BookingModel.find(query);
+
+    const no_of_bookings = bookings.length;
+    if (no_of_bookings === 0) {
+      return res.status(404).send({ message: "No Bookings Found" });
+    }
+
+    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
   } catch (err) {
+    // Log the error for debugging purposes
+    console.error("Error fetching bookings:", err.message);
     res.status(500).send({ message: err.message });
   }
 });
+
 
 //getting all bookings
 BookingRoutes.get('/all',async(req,res)=>{
