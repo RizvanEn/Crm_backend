@@ -225,8 +225,8 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
 //geting bookings by status 
 BookingRoutes.get('/bookings/status', async (req, res) => {
   const { status } = req.query;
-  const user_id = req.headers.user_id;
-  const user_role = req.headers.user_role; // Assuming the user role is provided in the headers
+  const user_id = req.query.user_id;
+  const user_role = req.query.user_role; // Assuming the user role is provided in the headers
 
   try {
     // Validate the status parameter
