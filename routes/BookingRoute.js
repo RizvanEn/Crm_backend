@@ -205,7 +205,8 @@ BookingRoutes.get('/bookings', async (req, res) => {
       return res.status(404).send({ message: "No Bookings Found" });
     }
 
-    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    res.status(200).send(bookings)
   } catch (err) {
     // Log the error for debugging purposes
     console.error("Error fetching bookings:", err.message);
@@ -258,11 +259,12 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
         });
       }
 
-      return res.status(200).send({
-        message: "Bookings fetched successfully for the given user and service.",
-        bookings: bookingsByUserAndService,
-        no_of_bookings
-      });
+      // return res.status(200).send({
+      //   message: "Bookings fetched successfully for the given user and service.",
+      //   bookings: bookingsByUserAndService,
+      //   no_of_bookings
+      // });
+       return res.status(200).send(bookingsByUserAndService)
     }
 
     // If the user has a valid role, find bookings based on the service
@@ -273,7 +275,9 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
       return res.status(404).send({ message: "No Bookings Found for the given service." });
     }
 
-    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    res.status(200).send(bookings);
+    
     
   } catch (err) {
     // Handle any server errors
@@ -322,7 +326,8 @@ BookingRoutes.get('/bookings/status', async (req, res) => {
     if (no_of_bookings === 0) {
       return res.status(404).send({ message: "No Bookings Found for the given status" });
     }
-    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+    res.status(200).send(bookings);
   } catch (err) {
     // Handle any server errors
     console.error("Error fetching bookings by status:", err.message);
