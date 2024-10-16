@@ -163,7 +163,7 @@ BookingRoutes.get('/all',async(req,res)=>{
   return res.status(404).send({message:"No Bookings To Show"})
 })
 
-//geting all bookings by status
+//geting all bookings by service
 BookingRoutes.get('/bookings/services', async (req, res) => {
   const { service } = req.query;
   const user_id = req.query.user_id;
@@ -218,6 +218,54 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
   } catch (err) {
     // Handle any server errors
     console.error("Error fetching bookings by service:", err.message);
+    res.status(500).send({ message: err.message });
+  }
+});
+
+//geting bookings by status 
+BookingRoutes.get('/bookings/status', async (req, res) => {
+  const { status } = req.query;
+  const user_id = req.headers.user_id;
+  const user_role = req.headers.user_role; // Assuming the user role is provided in the headers
+
+  try {
+    // Validate the status parameter
+    const validStatuses = ['Pending', 'In Progress', 'Completed'];
+    if (!status || !validStatuses.includes(status)) {
+      return res.status(400).send({
+        message: "Invalid or missing status parameter. Valid statuses are: Pending, In Progress, Completed."
+      });
+    }
+
+    // Define valid roles
+    const validRoles = ['dev', 'admin', 'senior admin'];
+
+    let bookings;
+    
+    // Check if the user has a valid role
+    if (user_role && validRoles.includes(user_role)) {
+      // If the user has a valid role, fetch all bookings for the given status
+      bookings = await BookingModel.find({ status: status });
+    } else {
+      // If the user doesn't have a valid role, fetch only the user's bookings for the given status
+      if (!user_id) {
+        return res.status(403).send({
+          message: "Access forbidden. No valid role or user ID provided."
+        });
+      }
+
+      bookings = await BookingModel.find({ user_id: user_id, status: status });
+    }
+
+    const no_of_bookings = bookings.length;
+
+    if (no_of_bookings === 0) {
+      return res.status(404).send({ message: "No Bookings Found for the given status" });
+    }
+    res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
+  } catch (err) {
+    // Handle any server errors
+    console.error("Error fetching bookings by status:", err.message);
     res.status(500).send({ message: err.message });
   }
 });
