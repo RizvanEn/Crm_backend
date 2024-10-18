@@ -6,7 +6,7 @@ const BookingRoutes = express.Router();
 //creating new booking
 BookingRoutes.post("/addbooking", async (req, res) => {
   try {
-    if (!req.body.branch_name || !req.body.company_name || !req.body.contact_person) {
+    if (!req.body.branch_name || !req.body.company_name || !req.body.contact_person||!req.body.pan) {
       return res.status(400).send({
         message: "send all requierd feilds branch_name company_name contact_person ..etc",
       });
