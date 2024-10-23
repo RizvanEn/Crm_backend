@@ -124,36 +124,6 @@ BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
   }
 });
 
-//getting bookings by date
-// BookingRoutes.get('/bookings?', async (req, res) => {
-//   const { startDate, endDate } = req.query;
-
-//   try {
-//     // If startDate and endDate are provided, filter bookings between those dates
-//     //GET /bookings?startDate=2023-09-01&endDate=2023-09-30
-
-//     const query = {};
-//     if (startDate && endDate) {
-//       query.date = {
-//         $gte: new Date(startDate),
-//         $lte: new Date(endDate)
-//       };
-//     }
-
-//     const bookings = await BookingModel.find(query);
-    
-//     const no_of_bookings=bookings.length;
-//     if(no_of_bookings==0){
-//       return res.status(404).send({message:"No Bookings Found"})
-//     }
-    
-//     // res.status(200).send({ message: "Bookings fetched successfully", bookings,no_of_bookings });
-//     res.status(200).send(bookings);
-//   } catch (err) {
-//     res.status(500).send({ message: err.message });
-//   }
-// });
-
 //getting bookings by date 
 BookingRoutes.get('/bookings', async (req, res) => {
   const { startDate, endDate } = req.query;
