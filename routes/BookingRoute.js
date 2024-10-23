@@ -228,8 +228,8 @@ BookingRoutes.get('/all',async(req,res)=>{
 //geting all bookings by service
 BookingRoutes.get('/bookings/services', async (req, res) => {
   const { service } = req.query;
-  const user_id = req.query.user_id;
-  const user_role = req.headers.user_role; // Assuming the user role is provided in the headers
+  const userId = req.query.userId;
+  const userRole = req.query.userRole; // Assuming the user role is provided in the headers
 
   try {
     // Validate the service parameter
@@ -243,15 +243,15 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
     const validRoles = ['dev', 'admin', 'senior admin'];
 
     // Check if the user has a valid role
-    if (!user_role || !validRoles.includes(user_role)) {
+    if (!userRole || !validRoles.includes(userRole)) {
       // If the user doesn't have a valid role, find bookings by user_id and service
-      if (!user_id) {
+      if (!userId) {
         return res.status(403).send({
           message: "Access forbidden. No valid role or user ID provided."
         });
       }
 
-      const bookingsByUserAndService = await BookingModel.find({ user_id: user_id, services: service });
+      const bookingsByUserAndService = await BookingModel.find({ user_id: userId, services: service });
       const no_of_bookings = bookingsByUserAndService.length;
 
       if (no_of_bookings === 0) {
@@ -260,12 +260,11 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
         });
       }
 
-      // return res.status(200).send({
-      //   message: "Bookings fetched successfully for the given user and service.",
-      //   bookings: bookingsByUserAndService,
-      //   no_of_bookings
-      // });
-       return res.status(200).send(bookingsByUserAndService)
+      return res.status(200).send(
+       
+         bookingsByUserAndService,
+       
+    );
     }
 
     // If the user has a valid role, find bookings based on the service
@@ -276,9 +275,7 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
       return res.status(404).send({ message: "No Bookings Found for the given service." });
     }
 
-    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
     res.status(200).send(bookings);
-    
     
   } catch (err) {
     // Handle any server errors
