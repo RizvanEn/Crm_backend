@@ -178,6 +178,8 @@ UserRoutes.get('/:id?', async (req, res) => {
   const searchPattern = req.query.pattern; // Search pattern from the query parameter
   const userRole = req.query.userRole; // Assuming user's role is stored in req.user
   const userId = req.query.userId; // Assuming user's ID is stored in req.user
+// console.log(userRole,userId);
+let contactNo=parseInt(searchPattern)
 
   try {
     let Booking;
@@ -201,7 +203,12 @@ UserRoutes.get('/:id?', async (req, res) => {
       const searchQuery = {
         $or: [
           { company_name: { $regex: searchPattern, $options: 'i' } },
-          { contact_person: { $regex: searchPattern, $options: 'i' } }
+          { contact_person: { $regex: searchPattern, $options: 'i' } },
+          { email: { $regex: searchPattern, $options: 'i' } },
+          { pan: { $regex: searchPattern, $options: 'i' } },
+          { gst: { $regex: searchPattern, $options: 'i' } },
+          { services: { $regex: searchPattern, $options: 'i' } },
+          { $expr: { $regexMatch: { input: { $toString: "$contact_no" }, regex: searchPattern } } }
         ]
       };
 
@@ -225,8 +232,7 @@ UserRoutes.get('/:id?', async (req, res) => {
       return res.status(400).send({
         message: "Either id or pattern query parameter is required",
       });
-    }
-
+    }    
     res.status(200).send(Booking);
 
   } catch (error) {
@@ -234,7 +240,6 @@ UserRoutes.get('/:id?', async (req, res) => {
     return res.status(500).send({ message: error.message });
   }
 });
-
 
 
 //check user is a valid or not 
