@@ -283,12 +283,11 @@ BookingRoutes.get('/bookings/services', async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 });
-
-//geting bookings by status 
+//getting bookings by status
 BookingRoutes.get('/bookings/status', async (req, res) => {
   const { status } = req.query;
-  const user_id = req.query.user_id;
-  const user_role = req.query.user_role; // Assuming the user role is provided in the headers
+  const userId = req.query.userId;
+  const userRole = req.query.userRole; // Assuming the user role is provided in the headers
 
   try {
     // Validate the status parameter
@@ -305,18 +304,18 @@ BookingRoutes.get('/bookings/status', async (req, res) => {
     let bookings;
     
     // Check if the user has a valid role
-    if (user_role && validRoles.includes(user_role)) {
+    if (userRole && validRoles.includes(userRole)) {
       // If the user has a valid role, fetch all bookings for the given status
       bookings = await BookingModel.find({ status: status });
     } else {
       // If the user doesn't have a valid role, fetch only the user's bookings for the given status
-      if (!user_id) {
+      if (!userId) {
         return res.status(403).send({
           message: "Access forbidden. No valid role or user ID provided."
         });
       }
 
-      bookings = await BookingModel.find({ user_id: user_id, status: status });
+      bookings = await BookingModel.find({ user_id: userId, status: status });
     }
 
     const no_of_bookings = bookings.length;
@@ -324,7 +323,6 @@ BookingRoutes.get('/bookings/status', async (req, res) => {
     if (no_of_bookings === 0) {
       return res.status(404).send({ message: "No Bookings Found for the given status" });
     }
-    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
     res.status(200).send(bookings);
   } catch (err) {
     // Handle any server errors
