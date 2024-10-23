@@ -154,10 +154,12 @@ BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
 //   }
 // });
 
+//getting bookings by date 
 BookingRoutes.get('/bookings', async (req, res) => {
   const { startDate, endDate } = req.query;
-  const userRole = req.query.userRole;
   const userId = req.query.userId;
+  const userRole = req.query.userRole;
+// console.log(userId,userRole);
 
   try {
     // Initialize query
@@ -181,10 +183,8 @@ BookingRoutes.get('/bookings', async (req, res) => {
         $lte: parsedEndDate,
       };
     }
-
     // Define valid roles
     const validRoles = ['dev', 'admin', 'senior admin'];
-
     // Check if the user has a valid role
     if (!userRole || !validRoles.includes(userRole)) {
       // If the user doesn't have a valid role, restrict the query to their user_id
@@ -193,21 +193,17 @@ BookingRoutes.get('/bookings', async (req, res) => {
           message: "Access forbidden. No valid role or user ID provided."
         });
       }
-
-      // Restrict bookings to the user's own bookings
-      query.userId = userId;
+      //Restrict bookings to the user's own bookings
+      query.user_id = userId;
     }
-
     // Fetch bookings based on the constructed query
     const bookings = await BookingModel.find(query);
-
     const no_of_bookings = bookings.length;
     if (no_of_bookings === 0) {
       return res.status(404).send({ message: "No Bookings Found" });
     }
 
-    // res.status(200).send({ message: "Bookings fetched successfully", bookings, no_of_bookings });
-    res.status(200).send(bookings)
+    res.status(200).send(bookings);
   } catch (err) {
     // Log the error for debugging purposes
     console.error("Error fetching bookings:", err.message);
