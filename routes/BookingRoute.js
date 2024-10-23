@@ -153,10 +153,11 @@ BookingRoutes.delete('/deletebooking/:id', async (req, res) => {
 //     res.status(500).send({ message: err.message });
 //   }
 // });
+
 BookingRoutes.get('/bookings', async (req, res) => {
   const { startDate, endDate } = req.query;
-  const user_id = req.query.user_id;
-  const user_role = req.query.user_role;
+  const userRole = req.query.userRole;
+  const userId = req.query.userId;
 
   try {
     // Initialize query
@@ -185,16 +186,16 @@ BookingRoutes.get('/bookings', async (req, res) => {
     const validRoles = ['dev', 'admin', 'senior admin'];
 
     // Check if the user has a valid role
-    if (!user_role || !validRoles.includes(user_role)) {
+    if (!userRole || !validRoles.includes(userRole)) {
       // If the user doesn't have a valid role, restrict the query to their user_id
-      if (!user_id) {
+      if (!userId) {
         return res.status(403).send({
           message: "Access forbidden. No valid role or user ID provided."
         });
       }
 
       // Restrict bookings to the user's own bookings
-      query.user_id = user_id;
+      query.userId = userId;
     }
 
     // Fetch bookings based on the constructed query
