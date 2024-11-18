@@ -20,6 +20,7 @@ const bookingSchema = mongoose.Schema(
     gst:{type:String},
     remark:{type:String},
     date: { type: Date, required: true },
+    closed_by:{type:String},
     bank:{type:String},
     status:{type:String}
   },
