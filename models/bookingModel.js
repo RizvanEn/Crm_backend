@@ -22,7 +22,8 @@ const bookingSchema = mongoose.Schema(
     date: { type: Date, required: true },
     closed_by:{type:String},
     bank:{type:String},
-    status:{type:String}
+    status:{type:String},
+    after_disbursement:{type:String}
   },
   { versionKey: false ,
   timestamps:true}
