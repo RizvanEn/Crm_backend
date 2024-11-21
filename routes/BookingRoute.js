@@ -46,7 +46,9 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       date: req.body.date ? req.body.date : new Date(),
       status:req.body.status,
       closed_by:req.body.closed_by,
-      bank:req.body.bank
+      bank:req.body.bank,
+      after_disbursement:req.body.funddisbursement
+      
     };
     
     const booking = await BookingModel.create(new_booking);
