@@ -11,12 +11,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
         message: "send all requierd feilds branch_name company_name contact_person ..etc",
       });
     }
-    // const existingUser = await UserModel.findById(req.body.user_id);
-    // if (!existingUser) {
-    //   return res.status(400).send({
-    //     message: "Invalid user. Please provide a valid user ID.",
-    //   });
-    // }
+
     const existingBooking = await BookingModel.findOne({pan: req.body.pan});
 
     if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
