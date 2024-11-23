@@ -208,6 +208,7 @@ let contactNo=parseInt(searchPattern)
           { pan: { $regex: searchPattern, $options: 'i' } },
           { gst: { $regex: searchPattern, $options: 'i' } },
           { services: { $regex: searchPattern, $options: 'i' } },
+           { bdm: { $regex: searchPattern, $options: 'i' } },
           { $expr: { $regexMatch: { input: { $toString: "$contact_no" }, regex: searchPattern } } }
         ]
       };
@@ -266,8 +267,5 @@ UserRoutes.get('/:id', async (req, res) => {
     return res.status(500).send({ message: error.message });
   }
 })
-
-
-
 
 export default UserRoutes;
