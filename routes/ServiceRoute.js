@@ -55,4 +55,24 @@ ServiceRoutes.patch('/api/services/:id', async (req, res) => {
     }
 });
 
+//getting all servivces
+ServiceRoutes.get('/api/services', async (req, res) => {
+    try {
+        // Fetch all services from the database
+        const services = await ServiceModel.find();
+
+        // Check if there are any services
+        if (!services || services.length === 0) {
+            return res.status(404).send({ message: 'No services found' });
+        }
+
+        // Send the services as a response
+        res.status(200).send(services);
+    } catch (error) {
+        console.error('Error fetching services:', error);
+        res.status(500).send({ message: 'Error fetching services', error: error.message });
+    }
+});
+
+
 export default ServiceRoutes;
