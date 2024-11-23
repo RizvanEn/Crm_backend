@@ -2,9 +2,9 @@ import express from "express";
 import { PORT,connection } from "./config.js";
 import UserRoutes from './routes/Userroutes.js'
 import BookingRoutes from "./routes/BookingRoute.js";
+import ServiceRoutes from "./routes/ServiceRoute.js";
 import cors from "cors";
 const app = express();
-// app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
 const corsOptions = {
@@ -15,28 +15,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-// app.use(cors));
-
-// app.use(cors());
-// app.use(
-//   cors({
-//     origin: "http://localhost:5500",
-//     methods: ["GET", "POST", "PUT", "DELETE"],
-//     allowedHeaders: ["Content-Type"],
-//   })
-// );
-// app.use(cors({
-//   origin: "http://127.0.0.1:5500",
-//   methods: ["GET", "POST", "PUT", "DELETE"],
-//   allowedHeaders: ["Content-Type"],
-// }));
-
 app.use("/user", UserRoutes);
 app.use("/booking", BookingRoutes);
-
-app.get("/", (req, res) => {
-  res.send("<h1>server is running successfully</h1>");
-});
+app.use("/services",ServiceRoutes)
 
 connection()
   .then(() => {
