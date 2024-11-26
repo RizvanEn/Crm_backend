@@ -177,7 +177,7 @@ UserRoutes.put('/password-reset', async (req, res) => {
 //listing all users
 UserRoutes.get('/all', async (req, res) => {
   try {
-    const Users = await UserModel.find({});
+    const Users = await UserModel.find({},'name email user_role');
     if (Users.length === 0) {
       return res.status(404).send({
         message: "No Users found",
