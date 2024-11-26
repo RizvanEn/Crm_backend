@@ -8,7 +8,7 @@ const bookingSchema = mongoose.Schema(
     contact_person: { type: String, required: true },
     email: { type: String, required: true },
     contact_no:{type:Number,required:true},
-    services:{type:String,required:true},
+    services:{type: [String], required: true},
     total_amount:{type:Number,required:true},
     term_1:{type:Number},
     term_2:{type:Number},
