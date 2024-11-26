@@ -12,13 +12,13 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       });
     }
 
-    const existingBooking = await BookingModel.findOne({pan: req.body.pan});
+    // const existingBooking = await BookingModel.findOne({pan: req.body.pan});
 
-    if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
-      return res.status(400).send({
-        message: "Booking with the same GST or PAN already exists for a different user.",
-      });
-    }
+    // if (existingBooking && existingBooking.user_id.toString() !== req.body.user_id.toString()) {
+    //   return res.status(400).send({
+    //     message: "Booking with the same GST or PAN already exists for a different user.",
+    //   });
+    // }
     const new_booking = {
       user_id: req.body.user_id,
       bdm:req.body.bdm,
