@@ -48,6 +48,51 @@ UserRoutes.post("/adduser", async (req, res) => {
   }
 });
 
+//edit user
+UserRoutes.patch('/edituser/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const updates = req.body;
+
+    // Ensure there are fields to update
+    if (!updates || Object.keys(updates).length === 0) {
+      return res.status(400).send({ message: 'No fields provided for update' });
+    }
+
+    // Normalize email if it's being updated
+    if (updates.email) {
+      updates.email = updates.email.toLowerCase();
+
+      // Check if the new email is already registered
+      const existingUser = await UserModel.findOne({ email: updates.email, _id: { $ne: id } });
+      if (existingUser) {
+        return res.status(409).send({ message: 'Email is already registered' });
+      }
+    }
+
+    // Hash the password if it's being updated
+    if (updates.password) {
+      updates.password = await bcrypt.hash(updates.password, saltRounds);
+    }
+
+    // Update user by ID
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { $set: updates },
+      { new: true, runValidators: true } // Return updated user and validate fields
+    );
+
+    if (!updatedUser) {
+      return res.status(404).send({ message: 'User not found' });
+    }
+
+    return res.status(200).send({ message: 'User updated successfully', user: updatedUser });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).send({ message: error.message });
+  }
+});
+
 //user login
 UserRoutes.post('/login', async (req, res) => {
   try {
