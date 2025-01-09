@@ -206,7 +206,7 @@ UserRoutes.get('/all', async (req, res) => {
     const no_of_users = Users.length;
     // console.log(no_of_users);
 
-    res.status(200).send({ Users })
+    res.status(200).send({ no_of_users,Users })
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: error.message });
