@@ -135,6 +135,23 @@ UserRoutes.post('/login', async (req, res) => {
   }
 });
 
+//logout
+UserRoutes.patch('/logout/:id',async(req,res)=>{
+  const {id}= req.params
+  try {
+    const user = await UserModel.findByIdAndUpdate(id,{isActive:false})
+    
+    if (!user) {
+      return res.status(404).send({
+        message: "User not found.",
+      });
+    }
+    res.send(user.name)
+  } catch (error) {
+    return res.status(500).send({ message: error.message });
+  }
+});
+
 //reset password
 UserRoutes.put('/password-reset', async (req, res) => {
   const { password, email } = req.body;
