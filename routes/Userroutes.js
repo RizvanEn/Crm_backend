@@ -174,10 +174,30 @@ UserRoutes.put('/password-reset', async (req, res) => {
   }
 });
 
+// Deleting User
+UserRoutes.delete("/deleteuser/:id", async (req, res) => {
+  try {
+    const { id } = req.params; // Assuming you are using a unique ID for the user
+
+    // Check if the user exists
+    const existingUser = await UserModel.findById(id);
+    if (!existingUser) {
+      return res.status(404).send({ message: "User not found" });
+    }
+
+    // Delete the user
+    await UserModel.findByIdAndDelete(id);
+
+    return res.status(200).send({ message: "User deleted successfully" });
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).send({ message: error.message });
+  }
+});
 //listing all users
 UserRoutes.get('/all', async (req, res) => {
   try {
-    const Users = await UserModel.find({});
+    const Users = await UserModel.find({}).select("-password");
     if (Users.length === 0) {
       return res.status(404).send({
         message: "No Users found",
@@ -185,13 +205,8 @@ UserRoutes.get('/all', async (req, res) => {
     }
     const no_of_users = Users.length;
     // console.log(no_of_users);
-    const filteredUsers = Users.map(user => ({
-      name: user.name,
-      email: user.email,
-      user_role: user.user_role,
-    }));
 
-    res.status(200).send({ no_of_users,filteredUsers })
+    res.status(200).send({ Users })
   } catch (error) {
     console.log(error.message);
     return res.status(500).send({ message: error.message });
