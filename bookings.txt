@@ -114,3 +114,24 @@ Rizvan@123 Rizvan user pass of mongodb cluster
     "gst":"2ZZLI98H",
     "remark":"ABC"
   }
+
+
+   // const conn = await mongoose.connect('mongodb://localhost:27017/crm');
+
+   user
+    POST booking/addbooking
+    PATCH booking/editbooking/:id
+    DELETE booking/deletebooking/:id
+    GET booking/bookings
+    GET booking/all
+    POST user/adduser
+    POST user/login
+    GET user/all
+    GET user/bookings/:id
+    GET user/bookings/booking/:id
+    GEt user/:id
+
+    base url https://crm-backend-6kqk.onrender.com
+
+
+

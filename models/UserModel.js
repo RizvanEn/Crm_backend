@@ -3,14 +3,16 @@ import mongoose from "mongoose";
 const userSchema = mongoose.Schema(
   {
     name: { type: String, required: true },
-    email: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     user_role: { type: String, required: true },
     isActive: { type: Boolean, default: false },
+    resetPasswordToken: { type: String },
+    resetPasswordExpires: { type: Date }
   },
   { 
     timestamps: false, 
-    versionKey: false  // This removes the __v field
+    versionKey: false
   }
 );
 

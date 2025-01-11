@@ -1,11 +1,14 @@
 import express from "express";
-import { PORT,connection } from "./config.js";
+import { PORT, connection } from "./config.js";
 import UserRoutes from './routes/Userroutes.js'
 import BookingRoutes from "./routes/BookingRoute.js";
 import ServiceRoutes from "./routes/ServiceRoute.js";
 import cors from "cors";
 const app = express();
+
 app.use(express.json());
+app.use(cors());
+
 
 const corsOptions = {
   origin: '*', // Allow all origins
@@ -19,11 +22,16 @@ app.use("/user", UserRoutes);
 app.use("/booking", BookingRoutes);
 app.use("/services",ServiceRoutes)
 
+
+app.get("/", (req, res) => {
+  res.send("<h1>server is running successfully</h1>");
+});
+
 connection()
   .then(() => {
     console.log("connected");
     app.listen(PORT, () => {
-      // console.log(`server is running at http://localhost:${PORT} `);
+      console.log(`server is running at http://localhost:${PORT} `);
     });
   })
   .catch((err) => {

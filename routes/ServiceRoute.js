@@ -1,5 +1,7 @@
 import express from "express";
 import { ServiceModel } from "../models/ServiceModel.js";
+import servicesList from '../servicesList.js'; // Adjust the import path for your services list
+
 
 const ServiceRoutes = express.Router();
 
@@ -8,12 +10,12 @@ ServiceRoutes.post('/api/services', async (req, res) => {
     const { name, value, status } = req.body;
 
     // Validate input
-    if (!name || !value|| !status) {
+    if (!name || !value || !status) {
         return res.status(400).send('Invalid input data');
     }
 
     // Create and save the service
-    const service ={
+    const service = {
         name,
         value,
         status
@@ -71,6 +73,27 @@ ServiceRoutes.get('/api/services', async (req, res) => {
     } catch (error) {
         console.error('Error fetching services:', error);
         res.status(500).send({ message: 'Error fetching services', error: error.message });
+    }
+});
+
+
+
+// Route to bulk insert services
+ServiceRoutes.post('/api/bulk-insert-services', async (req, res) => {
+    try {
+        // Map servicesList to the required format
+        const services = servicesList.map(service => ({
+            name: service.label,
+            value: service.value,
+            status: service.disabled ? false : true, // Set status based on disabled flag
+        }));
+
+        // Insert services into the database
+        const result = await ServiceModel.insertMany(services);
+        res.status(201).send({ message: 'Services added successfully', result });
+    } catch (error) {
+        console.error('Error inserting services:', error);
+        res.status(500).send({ message: 'Error inserting services', error: error.message });
     }
 });
 
