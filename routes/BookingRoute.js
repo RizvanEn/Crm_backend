@@ -23,18 +23,18 @@ BookingRoutes.post("/addbooking", async (req, res) => {
         message: "send all requierd feilds branch_name company_name contact_person ..etc",
       });
     }
-    const existingBooking = await BookingModel.findOne({
-      $or: [
-        { gst: gst },
-        { pan: pan }
-      ]
-    });
+    // const existingBooking = await BookingModel.findOne({
+    //   $or: [
+    //     { gst: gst },
+    //     { pan: pan }
+    //   ]
+    // });
 
-    if (existingBooking &&existingBooking.user_id.toString() !== user_id.toString()) {
-      return res.status(400).send({
-        message: "Booking with the same GST or PAN already exists for a different user.",
-      });
-    }
+    // if (existingBooking &&existingBooking.user_id.toString() !== user_id.toString()) {
+    //   return res.status(400).send({
+    //     message: "Booking with the same GST or PAN already exists for a different user.",
+    //   });
+    // }
     const new_booking = {
       user_id: user_id,
       bdm: bdm,
