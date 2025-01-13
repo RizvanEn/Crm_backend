@@ -16,7 +16,7 @@ BookingRoutes.post("/addbooking", async (req, res) => {
       !branch_name || !contact_person
       || !user_id || !bdm || !contact_person || !email
       || !services || !Array.isArray(services) || services.length === 0
-      || !services || !total_amount || !term_1 || !term_1_payment_date
+      || !services || !total_amount
       || !pan || !date
     ) {
       return res.status(400).send({
